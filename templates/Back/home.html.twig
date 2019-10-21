@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>Bienvenue sur la Home Page Administration</h1>
+
+    <div class="col-md-3">
+        {% if is_granted('ROLE_CONTRIBUTEUR')  %}<a href="#">Edition des Articles</a>
+            <a href="">Ajouter un Article</a>
+        {% endif %}
+        {% if is_granted('ROLE_MANAGER')  %}<a href="#">Edition du Roster</a>
+            <a href="">Edition des Starters</a>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN')  %}<a href="{{ path("admin_user") }}">Edition des utilisateurs</a>{% endif %}
+    </div>
+{% endblock %}
+

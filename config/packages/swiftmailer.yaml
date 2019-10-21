@@ -1,0 +1,11 @@
+swiftmailer:
+#    transport:  smtp
+#    encryption: ssl
+#    auth_mode:  login
+#    host:       smtp.ionos.fr
+#    username:   remi.leger@remileger.eu
+#    password:   Sonco23no!
+
+
+    url: '%env(MAILER_URL)%'
+    spool: { type: 'memory' }

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1> Edition des utilisateurs</h1>
+        <table class="table table-striped  text-center table-hover">
+            <thead class="bg-danger text-light">
+            <tr>
+                <th>
+                    utilisateur
+                </th>
+                <th>
+                    email
+                </th>
+                <th>
+                    Roles
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            {% for user in users %}
+                <tbody>
+                <tr>
+
+                    <td>
+                        {{ user.username }}
+                    </td>
+                    <td>
+                        {{ user.email }}
+                    </td>
+                    <td>
+                        <form action="/admin/user/edit/{{ user.id }}" method="post">
+                            <select multiple name="roles[]" id="roles">
+                                <option value="ROLE_ADMIN" {% if 'ROLE_ADMIN' in user.roles %} selected {% endif %}>Admin</option>
+                                <option value="ROLE_CONTRIBUTEUR" {% if 'ROLE_CONTRIBUTEUR' in user.roles %} selected {% endif %}>Contributeur</option>
+                                <option value="ROLE_MANAGER" {% if 'ROLE_MANAGER' in user.roles %} selected {% endif %}>Manager</option>
+                                <option value="ROLE_USER" {% if 'ROLE_USER' in user.roles %} selected {% endif %}>User</option>
+                            </select>
+                            <button type="submit" class="btn btn-warning">Modifier les Roles</button>
+                        </form>
+                    </td>
+
+                    <td>
+
+
+                        <a href="#" class="btn btn-success">Regénérer mot de Passe</a>
+                        <a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+

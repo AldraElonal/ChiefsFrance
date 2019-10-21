@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Validation du compte</h1>
+    <p>Bonjour {{ user.username }} , votre compte est désormais validé, vous pouvez à présent vous <a href="{{ path('security_login') }}"> connecter. </a></p>
+
+{% endblock %}
+
+
+

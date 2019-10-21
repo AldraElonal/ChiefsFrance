@@ -1,0 +1,14 @@
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.fas {
+    padding: 0.25em;
+}
+
+
+.dropdown-item:hover{
+    background-color: #CA2430 !important;
+    color : white !important;
+    font-weight: bold !important;
+}
