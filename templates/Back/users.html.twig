@@ -13,9 +13,6 @@
                     email
                 </th>
                 <th>
-                    Roles
-                </th>
-                <th>
                     Actions
                 </th>
             </tr>
@@ -31,21 +28,9 @@
                         {{ user.email }}
                     </td>
                     <td>
-                        <form action="/admin/user/edit/{{ user.id }}" method="post">
-                            <select multiple name="roles[]" id="roles">
-                                <option value="ROLE_ADMIN" {% if 'ROLE_ADMIN' in user.roles %} selected {% endif %}>Admin</option>
-                                <option value="ROLE_CONTRIBUTEUR" {% if 'ROLE_CONTRIBUTEUR' in user.roles %} selected {% endif %}>Contributeur</option>
-                                <option value="ROLE_MANAGER" {% if 'ROLE_MANAGER' in user.roles %} selected {% endif %}>Manager</option>
-                                <option value="ROLE_USER" {% if 'ROLE_USER' in user.roles %} selected {% endif %}>User</option>
-                            </select>
-                            <button type="submit" class="btn btn-warning">Modifier les Roles</button>
-                        </form>
-                    </td>
-
-                    <td>
 
 
-                        <a href="#" class="btn btn-success">Regénérer mot de Passe</a>
+                        <a href="{{ path('security_editmember',{username : user.username}) }}" class="btn btn-success">Editer le profil</a>
                         <a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
                     </td>
                 </tr>

@@ -34,20 +34,21 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            dump($form->isValid());
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
             $factory = new Factory();
             $generator = $factory->getLowStrengthGenerator();
             $token = $generator->generateString(16);
             $user->setToken($token);
-            $user->setRoles(["ROLE_UNREGISTERED"]);
+            $user->setRoles("ROLE_UNREGISTERED");
 
 
             $notification->notifyInscription($user);
             $manager->persist($user);
             $manager->flush();
             $this->addFlash('success', 'Veuillez vérifier vos emails pour confirmer votre inscription');
-            return $this->redirectToRoute('security_login');
+//            return $this->redirectToRoute('security_login');
         }
 
         return $this->render('security/registration.html.twig', [
@@ -65,10 +66,9 @@ class SecurityController extends AbstractController
     public function confirmRegistration(ObjectManager $manager, UserRepository $repository, string $token)
     {
         $user = $repository->findOneBy(['token' => $token]);
-        var_dump($user);
-        if ($user != null AND $user->getRoles() === ["ROLE_UNREGISTERED"]) {
-            $user->setRoles(["ROLE_USER"]);
-
+        if ($user != null AND $user->getRoles() == ["ROLE_UNREGISTERED"]) {
+            $user->setRoles("ROLE_ADMIN");
+            $user->setToken('');
             // regénérer un token une fois la validation confirmée?
             $manager->flush();
             return $this->render('security/validation.html.twig', [
@@ -163,6 +163,44 @@ class SecurityController extends AbstractController
 
 
     /**
+     * @Route("/member/{username}", name="security_editmember")
+     *
+     */
+    public function editProfile(string $username, UserRepository $repository, ObjectManager $manager, Request $request, UserPasswordEncoderInterface $encoder)
+    {
+
+        if ($this->getUser()->getUsername() == $username OR in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            $user = $repository->findOneBy(["username" => $username]);
+
+          if($user==null){
+              return $this->redirectToRoute("home");
+          }
+            $form = $this->createForm(RegistrationType::class, $user);
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() AND $form->isValid()) {
+
+                $hash = $encoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($hash);
+                $user->setToken('');
+//            regénérer un token une fois le mdp modifié?
+                $manager->flush();
+                $this->addFlash('success', 'Votre profil a bien été modifié');
+                return $this->redirectToRoute("home");
+            } else {
+
+
+                return $this->render("security/editProfile.html.twig", [
+                    "form" => $form->createView(),
+                    "user" => $user
+                ]);
+            }
+        }
+        return $this->redirectToRoute("home");
+
+    }
+
+    /**
      * @Route("/connexion",  name="security_login")
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -186,11 +224,12 @@ class SecurityController extends AbstractController
     public function checkValid()
     {
 
-        if (in_array("ROLE_UNREGISTERED", $this->getUser()->getRoles()) OR !$this->getUser()->gettoken() == "") {
+        if ($this->getUser()->getRoles() == ["ROLE_UNREGISTERED"] OR !$this->getUser()->gettoken() == "") {
 // utilisateur non enregistré ou token non nul
 
             return $this->redirectToRoute("security_logout");
         } else {
+
 
             return $this->redirectToRoute("home");
 

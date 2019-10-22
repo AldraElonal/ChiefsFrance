@@ -95,9 +95,11 @@ class User implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword($password): self
     {
-        $this->password = $password;
+        if (!is_null($password)) {
+            $this->password = $password;
+        }
 
         return $this;
     }
@@ -113,6 +115,14 @@ class User implements UserInterface
 
         return $this;
     }
+
+
+//    public function setRoles(string $roles): self
+//    {
+//        $this->roles = $roles;
+//
+//        return $this;
+//    }
 
 
     public function addRole(string $role): self

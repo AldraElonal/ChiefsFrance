@@ -23,7 +23,7 @@
                     <a class="nav-link" href="{{ path('home') }}">Accueil <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Actualitées</a>
+                    <a class="nav-link" href="{{ path('article_showall') }}">Actualitées</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Calendrier</a>
@@ -54,7 +54,7 @@
                         <a class="dropdown-item" href="{{ path('security_registration') }}">Inscription</a>
                         {% else %}
                         <a class="dropdown-item" href="{{ path('security_logout') }}">Deconnexion</a>
-                        {#<a class="dropdown-item" href="{{ path('security_member') }}">Profil</a>#}
+                        <a class="dropdown-item" href="{{ path('security_editmember',{username: app.user.username}) }}">Profil</a>
                         {% endif %}
                         {% if is_granted(['ROLE_MANAGER', 'ROLE_CONTRIBUTEUR']) %}
                         <a class="dropdown-item" href="{{ path('admin_index') }}">Administration</a>
