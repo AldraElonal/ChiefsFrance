@@ -17,3 +17,40 @@
 .bg-redchiefs{
     background-color: #CA2430 !important;
 }
+
+
+.list-group-item-action:hover{
+    background-color: #FFB612 !important;
+    font-weight: bold !important;
+    color : white !important;
+}
+
+
+/*.container{*/
+
+    /*max-width: none !important;*/
+/*}*/
+
+/*.row{*/
+    /*margin-right: 0 !important;*/
+    /*margin-left: 0 !important;*/
+/*}*/
+
+.list-group-item:last-child {
+    margin-top: -1px;
+}
+
+
+.table-hover tbody tr:hover{
+    background-color: #dbdbdb !important;
+}
+
+.navbar-nav {
+    font-size: 1.5em;
+}
+
+
+.form-check{
+    display: inline !important;
+    padding-left: 2rem !important;
+}

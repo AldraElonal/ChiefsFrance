@@ -1,42 +1,65 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
     <div class="container">
-        <h1> Edition des utilisateurs</h1>
-        <table class="table table-striped  text-center table-hover">
-            <thead class="bg-danger text-light">
-            <tr>
-                <th>
-                    utilisateur
-                </th>
-                <th>
-                    email
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-            </thead>
-            {% for user in users %}
-                <tbody>
-                <tr>
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="list-group mt-4">
+                    <li class="list-group-item bg-redchiefs text-light  font-weight-bold">Menu d'Administration</li>
+                    {% if is_granted('ROLE_CONTRIBUTEUR') %}
+                        <a href="#" class="list-group-item list-group-item-action">Edition des Articles</a>
+                        <a href="" class="list-group-item list-group-item-action">Ajouter un Article</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <a href="#" class="list-group-item list-group-item-action">Edition du Roster</a>
+                        <a href="" class="list-group-item list-group-item-action">Edition des Starters</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path("admin_user") }}" class="list-group-item list-group-item-action">Edition
+                            des utilisateurs</a>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-9 mt-4">
+                <h1> Edition des utilisateurs</h1>
 
-                    <td>
-                        {{ user.username }}
-                    </td>
-                    <td>
-                        {{ user.email }}
-                    </td>
-                    <td>
+                <table class="table table-striped  text-center table-hover">
+                    <thead class="bg-redchiefs text-light">
+                    <tr>
+                        <th>
+                            utilisateur
+                        </th>
+                        <th>
+                            email
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    {% for user in users %}
+                        <tbody>
+                        <tr>
 
-
-                        <a href="{{ path('security_editmember',{username : user.username}) }}" class="btn btn-success">Editer le profil</a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                    </td>
-                </tr>
-                </tbody>
-            {% endfor %}
-        </table>
+                            <td>
+                                {{ user.username }}
+                            </td>
+                            <td>
+                                {{ user.email }}
+                            </td>
+                            <td>
+                                <a href="{{ path('security_editmember',{username : user.username}) }}"
+                                   class="btn btn-success">Editer le profil</a>
+                                <a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
 

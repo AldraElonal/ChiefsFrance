@@ -68,7 +68,7 @@ class SecurityController extends AbstractController
         $user = $repository->findOneBy(['token' => $token]);
         if ($user != null AND $user->getRoles() == ["ROLE_UNREGISTERED"]) {
             $user->setRoles("ROLE_ADMIN");
-            $user->setToken('');
+            $user->setToken(null);
             // regénérer un token une fois la validation confirmée?
             $manager->flush();
             return $this->render('security/validation.html.twig', [
@@ -143,7 +143,7 @@ class SecurityController extends AbstractController
             if ($form->isSubmitted() AND $form->isValid()) {
                 $hash = $encoder->encodePassword($user, $user->getPassword());
                 $user->setPassword($hash);
-                $user->setToken('');
+                $user->setToken(null);
 //            regénérer un token une fois le mdp modifié?
                 $manager->flush();
                 $this->addFlash('success', 'Votre mot de passe a été modifié, vous pouvez à présent vous connecter.');
@@ -169,33 +169,52 @@ class SecurityController extends AbstractController
     public function editProfile(string $username, UserRepository $repository, ObjectManager $manager, Request $request, UserPasswordEncoderInterface $encoder)
     {
 
+        $emptyUser = new User();
+
         if ($this->getUser()->getUsername() == $username OR in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
             $user = $repository->findOneBy(["username" => $username]);
 
-          if($user==null){
-              return $this->redirectToRoute("home");
-          }
-            $form = $this->createForm(RegistrationType::class, $user);
-
-            $form->handleRequest($request);
-            if ($form->isSubmitted() AND $form->isValid()) {
-
-                $hash = $encoder->encodePassword($user, $user->getPassword());
-                $user->setPassword($hash);
-                $user->setToken('');
-//            regénérer un token une fois le mdp modifié?
-                $manager->flush();
-                $this->addFlash('success', 'Votre profil a bien été modifié');
+            if ($user == null) {
                 return $this->redirectToRoute("home");
-            } else {
-
-
-                return $this->render("security/editProfile.html.twig", [
-                    "form" => $form->createView(),
-                    "user" => $user
-                ]);
             }
+
+            $formProfile = $this->createForm(RegistrationType::class, $user);
+
+            $formPassword = $this->createFormBuilder($emptyUser, [
+                'validation_groups' => "newPassword"
+            ])
+                ->add('password', PasswordType::class)
+                ->add('confirm_password', PasswordType::class)
+                ->getForm();
+
+
+            $formProfile->handleRequest($request);
+
+                if ($formProfile->isSubmitted() AND $formProfile->isValid()) {
+                    dump($user);
+                    $manager->flush();
+                    $this->addFlash('success', 'Votre profil a bien été modifié');
+                }
+
+
+            $formPassword->handleRequest($request);
+                if ($formPassword->isSubmitted() AND $formPassword->isValid()) {
+                    $hash = $encoder->encodePassword($user, $user->getPassword());
+                    $user->setPassword($hash);
+                    $manager->flush();
+                    $this->addFlash('success', 'Votre mot de passe a bien été modifié');
+                }
+
+
+            return $this->render("security/editProfile.html.twig", [
+                "formProfile" => $formProfile->createView(),
+                "formPassword" => $formPassword->createView(),
+                "user" => $user
+            ]);
+
         }
+
+
         return $this->redirectToRoute("home");
 
     }
@@ -224,7 +243,7 @@ class SecurityController extends AbstractController
     public function checkValid()
     {
 
-        if ($this->getUser()->getRoles() == ["ROLE_UNREGISTERED"] OR !$this->getUser()->gettoken() == "") {
+        if ($this->getUser()->getRoles() == ["ROLE_UNREGISTERED"] OR !$this->getUser()->gettoken() == "" OR !$this->getUser()->gettoken() == null) {
 // utilisateur non enregistré ou token non nul
 
             return $this->redirectToRoute("security_logout");

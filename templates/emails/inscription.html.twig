@@ -1,7 +1,7 @@
 <h1> Bienvenue sur ChiefsFrance</h1>
 
 <p>Merci {{ user.username }} de vous etre inscrit ChiefsFrance , le site dédié aux fans français des Chiefs!<br>
-
+<br>
 Votre compte est actuellement inactif, pour l'activer rendez vous sur ce lien  :
 <a href="{{ url("validation_token",{token: user.token}) }}">Validation d'inscription</a>
 </p>

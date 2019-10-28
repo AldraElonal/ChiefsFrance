@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
-class UserController extends AbstractController {
+class UserController extends AbstractController
+{
 
 
     /**
@@ -29,11 +30,11 @@ class UserController extends AbstractController {
      * @Route("/admin/user", name="admin_user")
      * @return Response
      */
-    public function index():Response
+    public function index(): Response
     {
 
-$users = $this->repository->findAll();
-        return new Response($this->renderView('Back/users.html.twig',['users' =>$users]));
+        $users = $this->repository->findAll();
+        return new Response($this->renderView('Back/users.html.twig', ['users' => $users]));
     }
 
 
@@ -56,7 +57,7 @@ $users = $this->repository->findAll();
 
         return $this->redirectToRoute("admin_user");
 
-}
+    }
 }
 
 

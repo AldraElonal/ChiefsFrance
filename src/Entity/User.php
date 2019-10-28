@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,9 +59,14 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $token;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -127,7 +134,7 @@ class User implements UserInterface
 
     public function addRole(string $role): self
     {
-        $this->roles[] = $role ;
+        $this->roles[] = $role;
 
         return $this;
     }
@@ -149,14 +156,14 @@ class User implements UserInterface
     }
 
 
-
-
-    public function getSalt(){
+    public function getSalt()
+    {
 
     }
 
 
-    public function eraseCredentials(){
+    public function eraseCredentials()
+    {
 
     }
 
@@ -165,7 +172,7 @@ class User implements UserInterface
         return $this->token;
     }
 
-    public function setToken(string $token): self
+    public function setToken(?string $token): self
     {
         $this->token = $token;
 

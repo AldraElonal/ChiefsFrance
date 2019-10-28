@@ -1,15 +1,28 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>Bienvenue sur la Home Page Administration</h1>
-
-    <div class="col-md-3">
-        {% if is_granted('ROLE_CONTRIBUTEUR')  %}<a href="#">Edition des Articles</a>
-            <a href="">Ajouter un Article</a>
-        {% endif %}
-        {% if is_granted('ROLE_MANAGER')  %}<a href="#">Edition du Roster</a>
-            <a href="">Edition des Starters</a>
-        {% endif %}
-        {% if is_granted('ROLE_ADMIN')  %}<a href="{{ path("admin_user") }}">Edition des utilisateurs</a>{% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="list-group mt-4">
+                    <li class="list-group-item bg-redchiefs text-light  font-weight-bold">Menu d'Administration</li>
+                    {% if is_granted('ROLE_CONTRIBUTEUR') %}
+                        <a href="#" class="list-group-item list-group-item-action">Edition des Articles</a>
+                        <a href="" class="list-group-item list-group-item-action">Ajouter un Article</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <a href="#" class="list-group-item list-group-item-action">Edition du Roster</a>
+                        <a href="" class="list-group-item list-group-item-action">Edition des Starters</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path("admin_user") }}" class="list-group-item list-group-item-action">Edition
+                            des utilisateurs</a>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-9 mt-4">
+                <h1>Bienvenue sur la Home Page Administration</h1>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

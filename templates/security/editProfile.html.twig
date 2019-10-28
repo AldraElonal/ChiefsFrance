@@ -2,20 +2,35 @@
 
 {% block body %}
     <div class="container">
-        {{ form_start(form,{ attr: {novalidate: 'novalidate'}}) }}
-        {{ form_row(form.username,{'label': 'Nom d\'utilisateur','attr': {'placeholder': 'Pseudo'}}) }}
-        {{ form_row(form.email,{'label': 'Email','attr': {'placeholder': 'Adresse email'}}) }}
-        {{ form_row(form.password,{'label': 'Mot de passe','attr': {'placeholder': 'Mot de passe'}}) }}
-        {{ form_row(form.confirm_password,{'label': 'Confirmation du mot de passe','attr': {'placeholder': 'Confirmez le mot de passe'}}) }}
+        <div class="card mt-4">
+            <div class="card-header bg-redchiefs text-light"> <h2> Edition du Profil </h2></div>
+            <div class="card-body">
+                {{ form_start(formProfile) }}
+                {{ form_row(formProfile.username,{'label': 'Nom d\'utilisateur','attr': {'placeholder': 'Pseudo'}}) }}
+                {{ form_row(formProfile.email,{'label': 'Email','attr': {'placeholder': 'Adresse email'}}) }}
 
-        {% if  is_granted('ROLE_ADMIN') %}
-            {{ form_row(form.roles) }}
-        {% endif %}
-        <button type="submit" class="btn btn-danger">Editer le profil</button>
-        {{ form_row(form._token) }}
-        {{ form_end(form,{'render_rest':false}) }}
+                {% if  is_granted('ROLE_ADMIN') %}
+                    {{ form_row(formProfile.roles) }}
+                {% endif %}
+                <button type="submit" class="btn btn-danger">Editer le profil</button>
+                {{ form_row(formProfile._token) }}
+                {{ form_end(formProfile,{'render_rest':false}) }}
+            </div>
+        </div>
 
 
+        <div class="card mt-4">
+            <div class="card-header bg-redchiefs text-light">        <h2>Edition du mot de passe</h2></div>
+            <div class="card-body">
+
+        {{ form_start(formPassword) }}
+        {{ form_row(formPassword.password,{'label': 'Mot de passe','attr': {'placeholder': 'Mot de passe'}}) }}
+        {{ form_row(formPassword.confirm_password,{'label': 'Confirmation du mot de passe','attr': {'placeholder': 'Confirmez le mot de passe'}}) }}
+        <button type="submit" class="btn btn-danger">Editer le mot de passe</button>
+        {{ form_row(formPassword._token) }}
+        {{ form_end(formPassword,{'render_rest':false}) }}
+            </div>
+        </div>
     </div>
 
 

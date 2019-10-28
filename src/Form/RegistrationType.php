@@ -16,26 +16,27 @@ class RegistrationType extends AbstractType
         $builder
             ->add('email')
             ->add('username')
-            ->add('password',PasswordType::class)
-            ->add('confirm_password',PasswordType::class)
-            ->add('roles')
-//                ChoiceType::class, [
-//                    'choices' => [
-//                        'Utilisateur' => ['ROLE_USER'],
-//                        'Manager' => ['ROLE_MANAGER'],
-//                        'Contributeur' => ['ROLE_CONTRIBUTEUR'],
-//                        'Administrateur' => ['ROLE_ADMIN']
-//                    ],
-//                ]
-//            )
-        ;
+            ->add('password', PasswordType::class)
+            ->add('confirm_password', PasswordType::class)
+            ->add('roles',
+                ChoiceType::class, [
+                    'choices' => [
+                        'Utilisateur' => 'ROLE_USER',
+                        'Manager' => 'ROLE_MANAGER',
+                        'Contributeur' => 'ROLE_CONTRIBUTEUR',
+                        'Administrateur' => 'ROLE_ADMIN'
+                    ],
+                    'expanded' => true,
+                    'multiple' => true,
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'validation_groups' =>["registration"],
+            'validation_groups' => ["registration"],
         ]);
     }
 }
