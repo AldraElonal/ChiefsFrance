@@ -2,19 +2,34 @@
 
 {% block body %}
     <div class="container">
-        <h1> Actualitées</h1>
+        <h1> Actualités</h1>
         {% for article in articles %}
             <div class="card mt-4">
-                <div class="card-header bg-redchiefs text-light">
-                    {{ article.title }}
-                </div>
+                <h2 class="card-header bg-redchiefs text-light">
+                    <a class="text-light" href="{{ path('article', {id: article.id}) }}"> {{ article.title }} </a>
+                </h2>
                 <div class="card-body">
-                    {{ article.content }}
-                    <div class="font-italic text-muted mt-2"> Créé le {{ article.createdat|date }} <br>> par [
-                        ]</div>
+                    <div class="row no-gutters">
+                        {%  if article.imagename %}
+                        <div class="col-md-4">
+
+                            <img src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article_thumb') }}" height="170" width="250"/>
+                        </div>
+                        {%  endif %}
+                        <div class="col-md-8">
+                            {{ article.content|striptags|slice(0,100) }}...
+                        </div>
+                    </div>
+
+                    <div class="font-italic text-muted mt-2"> Créé
+                        le {{ article.createdat|localizeddate('none', 'none', null, null, 'eeee d MMMM Y à HH:mm') }}
+                        <br> par<span class="text-redchiefs">{{ article.userId.username }}</span></div>
                 </div>
             </div>
         {% endfor %}
+        <div class="pagination">
+            {{ knp_pagination_render(articles) }}
+        </div>
     </div>
 {% endblock %}
 

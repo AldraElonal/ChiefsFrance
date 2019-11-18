@@ -163,7 +163,7 @@ class SecurityController extends AbstractController
 
 
     /**
-     * @Route("/member/{username}", name="security_editmember")
+     * @Route("/membre/{username}", name="security_editmember")
      *
      */
     public function editProfile(string $username, UserRepository $repository, ObjectManager $manager, Request $request, UserPasswordEncoderInterface $encoder)
@@ -189,9 +189,7 @@ class SecurityController extends AbstractController
 
 
             $formProfile->handleRequest($request);
-
                 if ($formProfile->isSubmitted() AND $formProfile->isValid()) {
-                    dump($user);
                     $manager->flush();
                     $this->addFlash('success', 'Votre profil a bien été modifié');
                 }
@@ -199,17 +197,23 @@ class SecurityController extends AbstractController
 
             $formPassword->handleRequest($request);
                 if ($formPassword->isSubmitted() AND $formPassword->isValid()) {
-                    $hash = $encoder->encodePassword($user, $user->getPassword());
+                    $hash = $encoder->encodePassword($emptyUser, $emptyUser->getPassword());
                     $user->setPassword($hash);
                     $manager->flush();
                     $this->addFlash('success', 'Votre mot de passe a bien été modifié');
                 }
 
-
+                dump($this->getUser()->getUsername());
+if($username == $this->getUser()->getUsername()){
+    $editroles = true;
+}else{
+    $editroles = false;
+}
             return $this->render("security/editProfile.html.twig", [
                 "formProfile" => $formProfile->createView(),
                 "formPassword" => $formPassword->createView(),
-                "user" => $user
+                "user" => $user,
+                "editroles" => $editroles
             ]);
 
         }

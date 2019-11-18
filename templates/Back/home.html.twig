@@ -6,8 +6,10 @@
                 <ul class="list-group mt-4">
                     <li class="list-group-item bg-redchiefs text-light  font-weight-bold">Menu d'Administration</li>
                     {% if is_granted('ROLE_CONTRIBUTEUR') %}
-                        <a href="#" class="list-group-item list-group-item-action">Edition des Articles</a>
-                        <a href="" class="list-group-item list-group-item-action">Ajouter un Article</a>
+                        <a href="{{ path('admin_articles') }}" class="list-group-item list-group-item-action">Edition
+                            des Articles</a>
+                        <a href="{{ path('admin_editArticle') }}" class="list-group-item list-group-item-action">Ajouter
+                            un Article</a>
                     {% endif %}
                     {% if is_granted('ROLE_MANAGER') %}
                         <a href="#" class="list-group-item list-group-item-action">Edition du Roster</a>
@@ -21,8 +23,100 @@
             </div>
             <div class="col-md-9 mt-4">
                 <h1>Bienvenue sur la Home Page Administration</h1>
+                <table class="table table-striped  text-center table-hover mt-4">
+                    <thead class="bg-redchiefs text-light">
+                    <tr>
+                        <th>
+                            utilisateur
+                        </th>
+                        <th>
+                            contenu
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    {% for comment in comments %}
+                        <tbody>
+                        <tr>
+
+                            <td>
+                                {{ comment.user.username }}
+                            </td>
+                            <td>
+                                {{ comment.content }}
+                            </td>
+                            <td>
+                                <a href="{{ path('admin_allowComment',{id: comment.id}) }}"
+                                   class="btn btn-success"><i class="fas fa-check"></i></a>
+                                <a href="{{ path('admin_disableComment',{id: comment.id}) }}" class="btn btn-danger"><i
+                                            class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+
             </div>
         </div>
     </div>
 {% endblock %}
 
+
+{% block javascripts %}
+
+    <script>
+
+        function allowComment(event) {
+            console.log("allowcomment");
+            event.preventDefault();
+            const url = this.href;
+            alert(url);
+            const commentRow = $(this).parent().parent();
+            $.ajax({
+
+                url: url,
+                type: "POST",
+                dataType: "json",
+                // async: true,
+                success: function () {
+                    commentRow.css('display', 'none');
+
+                }
+            });
+        }
+
+        function deleteComment(event) {
+            event.preventDefault();
+            console.log("disableComment");
+            const url = this.href;
+            const commentRow = $(this).parent().parent();
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                // async: true,
+                success: function () {
+                    commentRow.css('display', 'none');
+
+                }
+            });
+        }
+
+        document.querySelectorAll('a.btn-success').forEach(function (link) {
+
+            link.addEventListener('click', allowComment);
+        })
+        document.querySelectorAll('a.btn-danger').forEach(function (link) {
+
+            link.addEventListener('click', deleteComment);
+        })
+
+
+    </script>
+
+
+
+
+{% endblock %}

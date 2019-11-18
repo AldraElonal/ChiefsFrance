@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        {{ form_start(form) }}
+        {{ form_row(form.title,{'label': 'Titre de votre Article'}) }}
+        {{ form_row(form.categoryId,{'label': 'Catégorie'}) }}
+        {{ form_row(form.content,{'label': 'Contenu'}) }}
+        {{ form_row(form.imageFile,{'label': 'Image d\'illustration'}) }}
+        {{ form_row(form.status,{'label': 'Visible'}) }}
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+
+
+{% endblock %}
+

@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="card mt-4">
+            <h1 class="card-header bg-redchiefs text-light">     {{ article.title }}</h1>
+            <div class="card-body">
+                <p class="font-italic"> Par <span
+                            class="text-redchiefs font-weight-bold">{{ article.userId.username }}</span>
+                    le {{ article.createdat|localizeddate('none', 'none', null, null, 'eeee d MMMM Y à HH:mm') }}</p>
+                {% if article.imagename %}
+                    <img class="float-md-right ml-4 mb-4"
+                         src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article') }}">
+                {% else %}
+                    <img class="float-md-right ml-4 mb-4" src="{{ asset('img/jagschiefs.jpg') }}">
+                {% endif %}
+                <p> {{ article.content|html }} {{ article.content|html }} {{ article.content|html }} {{ article.content|html }} {{ article.content|html }} {{ article.content|html }}</p>
+            </div>
+        </div>
+
+
+        <div class="card mt-4 mb-4">
+            <h2 class="card-header bg-yellowchiefs"> Commentaires</h2>
+            <div class="card-body">
+                <h3>Ajouter un commentaire</h3>
+                <p>{{ form_start(formComment) }}
+                    {{ form_errors(formComment.content) }}
+                    {{ form_widget(formComment.content,{'attr': {'placeholder': 'Votre Commentaire'}}) }}
+                    {{ form_help(formComment.content) }}</p>
+                <button type="submit" class="btn bg-yellowchiefs">Ajouter un commentaire</button>
+                {{ form_end(formComment) }}
+
+
+                {% block comments %}
+
+                    <div id="ajax-results">here comes the result</div>
+                    <p class="pagination_comments"><span class="page-link previous_comments">Précédent</span><span
+                                class="page-link next_comments"> Suivant</span></p>
+
+                {% endblock %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    console.log("coucou");
+    let page = 0;
+    getComments(page);
+    $('.next_comments').on('click', () => {
+        page = page + 1;
+        getComments(page);
+    });
+    $('.previous_comments').on('click', () => {
+        page = page - 1;
+        getComments(page);
+    });
+
+    function getComments(page) {
+        let urlTarget = '{{ (path('article_comments',{id: article.id,page: 12354})) }}';
+        urlTarget = urlTarget.replace("12354", page);
+        $.ajax({
+            url: urlTarget,
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#ajax-results').html(data);
+            },
+            error: function () {
+                $('#ajax-results').html(/*erreur d'affichage des commentaires*/);
+            }
+        });
+    }
+</script>
+{% endblock %}

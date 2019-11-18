@@ -1,0 +1,61 @@
+{% block comments %}
+    {% if comments|length > 0 %}
+        {% for comment in comments %}
+            {% if comment.status > 0 %}
+            <hr>
+            <div class="comment">
+                <div class="row">
+                    <p class="font-weight-bold col-md-8"> {{ comment.user.username }}: <br>
+                        <span class="font-italic font-weight-light">Le  {{ comment.createdat|localizeddate('none', 'none', null, null, 'eeee d MMMM Y à HH:mm') }}</span>
+                    </p>
+                    {% if comment.status == 2 %}
+                        <a href="{{ path('article_signalComment',{id: comment.id}) }}"
+                           class="btn btn-success btn-signal col-md-2">Signaler</a>
+                    {% endif %}
+                </div>
+                {% if comment.status == 1 %}
+                    <p class="text-moderation">Ce commentaire a été soumis à la modération</p>
+                {% else %}
+                    <p class="text-comment">{{ comment.content }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+    {% else %}
+        <hr>
+        <p> Pas de Commentaires</p>
+    {% endif %}
+{% endblock %}
+
+     {% block javascripts %}
+         <script>
+
+             function signalComment(event) {
+                 event.preventDefault();
+
+                 const url = this.href;
+                 const content = $(this).parent().parent().children('p.text-comment');
+                 const that = $(this);
+                 $.ajax({
+
+                     url: url,
+                     type: "POST",
+                     dataType: "json",
+                     // async: true,
+                     success: function () {
+                         content.html("Ce commentaire a été soumis à modération");
+                         content.css('font-style', 'italic');
+                         that.css('display', 'none');
+
+                     }
+
+                 });
+             }
+
+             document.querySelectorAll('a.btn-signal').forEach(function (link) {
+                 link.addEventListener('click', signalComment);
+             })
+
+         </script>
+     {% endblock %}

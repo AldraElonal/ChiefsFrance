@@ -18,6 +18,13 @@
     background-color: #CA2430 !important;
 }
 
+.text-redchiefs{
+    color: #CA2430 !important;
+}
+
+.bg-yellowchiefs{
+    background-color: #FFB612 !important;
+}
 
 .list-group-item-action:hover{
     background-color: #FFB612 !important;
@@ -50,7 +57,23 @@
 }
 
 
+
 .form-check{
     display: inline !important;
     padding-left: 2rem !important;
+}
+
+.pagination_comments{
+    display: flex;
+}
+
+.btn-signal{
+    max-width: 75px !important;
+    max-height: 40px !important;
+    padding: 2px;
+
+}
+
+.text-moderation{
+    font-style: italic;
 }
