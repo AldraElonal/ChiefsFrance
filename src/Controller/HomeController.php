@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 
+use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
-class HomeController extends AbstractController {
+class HomeController extends AbstractController
+{
 
     /**
      * @var Environment
@@ -28,8 +31,18 @@ class HomeController extends AbstractController {
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function index():Response
+    public function index(ArticleRepository $articleRepository, CategoryRepository $categoryRepository): Response
     {
-        return new Response($this->twig->render('Front/home.html.twig'));
+        $categories = $categoryRepository->findAll();
+
+        foreach ($categories as $category) {
+            $articles[] = $articleRepository->findOneBy(['category' => $category], ['created_at' => "DESC"]);
+
+        }
+        $timezone =  new \DateTimeZone("Europe/Paris");
+        return new Response($this->twig->render('Front/home.html.twig',[
+            'articles' => $articles,
+            'timezone' => $timezone
+        ]));
     }
 }

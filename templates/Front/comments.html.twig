@@ -6,7 +6,7 @@
             <div class="comment">
                 <div class="row">
                     <p class="font-weight-bold col-md-8"> {{ comment.user.username }}: <br>
-                        <span class="font-italic font-weight-light">Le  {{ comment.createdat|localizeddate('none', 'none', null, null, 'eeee d MMMM Y à HH:mm') }}</span>
+                        <span class="font-italic font-weight-light">Le  {{ comment.createdat|localizeddate('none', 'none', null, timezone, 'eeee d MMMM Y à HH:mm') }}</span>
                     </p>
                     {% if comment.status == 2 %}
                         <a href="{{ path('article_signalComment',{id: comment.id}) }}"

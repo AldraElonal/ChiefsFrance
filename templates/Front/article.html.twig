@@ -4,10 +4,12 @@
     <div class="container">
         <div class="card mt-4">
             <h1 class="card-header bg-redchiefs text-light">     {{ article.title }}</h1>
+
             <div class="card-body">
+                <p class="category btn btn-danger">{{ article.categoryId.name }}</p>
                 <p class="font-italic"> Par <span
                             class="text-redchiefs font-weight-bold">{{ article.userId.username }}</span>
-                    le {{ article.createdat|localizeddate('none', 'none', null, null, 'eeee d MMMM Y à HH:mm') }}</p>
+                    le {{ article.createdat|localizeddate('none', 'none', null, timezone, 'eeee d MMMM Y à HH:mm') }}</p>
                 {% if article.imagename %}
                     <img class="float-md-right ml-4 mb-4"
                          src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article') }}">

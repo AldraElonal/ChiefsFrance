@@ -77,3 +77,8 @@
 .text-moderation{
     font-style: italic;
 }
+
+
+.category{
+    border-radius: 41% !important;
+}

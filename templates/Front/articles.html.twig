@@ -9,6 +9,7 @@
                     <a class="text-light" href="{{ path('article', {id: article.id}) }}"> {{ article.title }} </a>
                 </h2>
                 <div class="card-body">
+                    <p class="category btn btn-danger">{{ article.categoryId.name }}</p>
                     <div class="row no-gutters">
                         {%  if article.imagename %}
                         <div class="col-md-4">
@@ -22,8 +23,8 @@
                     </div>
 
                     <div class="font-italic text-muted mt-2"> Créé
-                        le {{ article.createdat|localizeddate('none', 'none', null, null, 'eeee d MMMM Y à HH:mm') }}
-                        <br> par<span class="text-redchiefs">{{ article.userId.username }}</span></div>
+                        le {{ article.createdat|localizeddate('none', 'none', null, timezone, 'eeee d MMMM Y à HH:mm') }}
+                        <br>Par <span class="text-redchiefs">{{ article.userId.username }}</span></div>
                 </div>
             </div>
         {% endfor %}

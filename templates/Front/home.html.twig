@@ -1,4 +1,76 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>Bienvenue sur la Home Page Visiteur</h1>
+    <div class="container mt-4">
+        <h1>Bienvenue sur ChiefsFrance</h1>
+        <div class="card mt-4">
+            <h2 class="card-header bg-redchiefs text-light">
+                Edito
+            </h2>
+            <div class="card-body">
+                <div class="row no-gutters">
+
+                    <div>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras volutpat nibh tincidunt bibendum
+                        imperdiet. Cras non rhoncus arcu. Maecenas rutrum gravida nisl, placerat viverra neque suscipit
+                        vitae. Etiam augue orci, consequat tempor lacinia at, tincidunt eu libero. Donec dui velit,
+                        eleifend sit amet posuere sed, cursus eu lacus. Integer gravida convallis nisl, sed sollicitudin
+                        mi lobortis vel. Integer eu odio vel nunc venenatis scelerisque. Sed vel neque ligula. Praesent
+                        eu dolor non elit blandit aliquam et rutrum metus. Praesent eu erat dignissim tortor commodo
+                        auctor ac a nisl. Mauris aliquam libero diam, non convallis leo laoreet ut. Nam augue ex,
+                        commodo ac sagittis at, varius et tellus. Cras volutpat ex ac velit blandit finibus. Cras in
+                        imperdiet nibh, eu porta elit.
+
+                        Proin at sapien in risus molestie malesuada et et erat. Curabitur fringilla turpis id tellus
+                        cursus, maximus bibendum erat sodales. Sed sagittis dictum nisi, sit amet facilisis risus
+                        commodo ut. Aenean suscipit malesuada nisl suscipit imperdiet. Sed bibendum leo eget ipsum
+                        sollicitudin pulvinar. Suspendisse et nisi pretium, aliquam nisi vel, malesuada ipsum. Nam
+                        blandit justo sit amet velit condimentum, nec pellentesque diam eleifend. Nunc nec fringilla
+                        tellus. Morbi velit purus, tincidunt vel nisl eget, tincidunt viverra turpis. Nullam vehicula,
+                        elit eu fringilla imperdiet, dui risus hendrerit purus, eget condimentum metus est in felis.
+                        Etiam consectetur faucibus eros at eleifend. Suspendisse nec nisi eget erat vestibulum blandit.
+                        Duis vel justo posuere, tristique orci et, convallis sem. Sed non neque ex.
+
+                        Vivamus lectus nisl, cursus eget ex eget, iaculis tempor turpis. Pellentesque non rhoncus nisl,
+                        at aliquet ipsum. Vivamus porta erat arcu, fermentum egestas turpis euismod at. Maecenas quis
+                        ligula eu elit pulvinar suscipit quis nec nisl. Etiam aliquet mattis purus eu euismod. Donec
+                        quam metus, dapibus lacinia diam eget, sodales suscipit neque. Quisque leo neque, dapibus ac
+                        purus a, consequat lacinia metus. Curabitur ut molestie arcu, a feugiat dolor. Fusce quam diam,
+                        sollicitudin in nunc sit amet, eleifend tempus massa. Donec vulputate maximus scelerisque. Nunc
+                        porta, libero vel luctus tristique, turpis enim commodo sem, hendrerit ultricies augue neque id
+                        ante. Etiam at nulla a justo malesuada feugiat. Duis dui sem, condimentum ac varius et, lobortis
+                        quis mi.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {% for article in articles %}
+            <div class="card mt-4">
+                <h2 class="card-header bg-redchiefs text-light">
+                    <a class="text-light" href="{{ path('article', {id: article.id}) }}"> {{ article.title }} </a>
+                </h2>
+                <div class="card-body">
+                    <p class="category btn btn-danger">{{ article.categoryId.name }}</p>
+                    <div class="row no-gutters">
+                        {% if article.imagename %}
+                            <div class="col-md-4">
+
+                                <img src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article_thumb') }}"
+                                     height="170" width="250"/>
+                            </div>
+                        {% endif %}
+                        <div class="col-md-8">
+                            {{ article.content|striptags|slice(0,100) }}...
+                        </div>
+                    </div>
+
+                    <div class="font-italic text-muted mt-2"> Créé
+                        le {{ article.createdat|localizeddate('none', 'none', null, timezone, 'eeee d MMMM Y à HH:mm') }}
+                        <br>Par <span class="text-redchiefs">{{ article.userId.username }}</span></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}

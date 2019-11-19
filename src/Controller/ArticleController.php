@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Json;
+use Symfony\Component\Validator\Constraints\Timezone;
 
 class ArticleController extends AbstractController
 {
@@ -30,6 +31,7 @@ class ArticleController extends AbstractController
      */
     private $userRepository;
 
+    private $localTimeZone;
     /**
      * ArticleController constructor.
      * @param ArticleRepository $articleRepository
@@ -37,7 +39,7 @@ class ArticleController extends AbstractController
      */
     public function __construct(ArticleRepository $articleRepository, UserRepository $userRepository)
     {
-
+$this->localTimeZone = new \DateTimeZone("Europe/Paris");
         $this->articleRepository = $articleRepository;
         $this->userRepository = $userRepository;
     }
@@ -59,8 +61,10 @@ class ArticleController extends AbstractController
 //            $user = $this->userRepository->findOneBy(['id' => $article->getUserId()]);
 //            $article->setUserId($user);
 //        }
-        return $this->render('front/articles.html.twig', [
-            'articles' => $articles
+
+        return $this->render('Front/articles.html.twig', [
+            'articles' => $articles,
+            'timezone' => $this->localTimeZone
         ]);
     }
 
@@ -98,7 +102,9 @@ class ArticleController extends AbstractController
         }
 
         $articleComments = $commentRepository->findBy(["Article" => $id]);
-        dump($articleComments);
+
+//        dump($article->getCreatedAt()->getTimezone());
+
 //        findBy(["Article" => $id,'status' => 2], ["created_at" => "DESC"]);
         //findArticleCommentAllowed($id);
         //findBy(["Article" => $id,'status' => ], ["created_at" => "DESC"]);
@@ -106,7 +112,8 @@ class ArticleController extends AbstractController
         return $this->render('front/article.html.twig', [
             'article' => $article,
             'formComment' => $formComment->createView(),
-            'comments' => $articleComments
+            'comments' => $articleComments,
+            'timezone' => $this->localTimeZone
         ]);
     }
 
@@ -127,7 +134,8 @@ class ArticleController extends AbstractController
         $comments = $commentRepository->findBy(["Article" => $id]);
         $commentsToDisplay = array_slice($comments,2*$page,4);
         $response = $this->render("Front/comments.html.twig", [
-            "comments" => $commentsToDisplay
+            "comments" => $commentsToDisplay,
+            'timezone' => $this->localTimeZone
         ]);
         return new JsonResponse($response->getContent());
     }
