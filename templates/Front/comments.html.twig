@@ -2,23 +2,23 @@
     {% if comments|length > 0 %}
         {% for comment in comments %}
             {% if comment.status > 0 %}
-            <hr>
-            <div class="comment">
-                <div class="row">
-                    <p class="font-weight-bold col-md-8"> {{ comment.user.username }}: <br>
-                        <span class="font-italic font-weight-light">Le  {{ comment.createdat|localizeddate('none', 'none', null, timezone, 'eeee d MMMM Y à HH:mm') }}</span>
-                    </p>
-                    {% if comment.status == 2 %}
-                        <a href="{{ path('article_signalComment',{id: comment.id}) }}"
-                           class="btn btn-success btn-signal col-md-2">Signaler</a>
+                <hr>
+                <div class="comment">
+                    <div class="row">
+                        <p class="font-weight-bold col-md-8"> {{ comment.username }}: <br>
+                            <span class="font-italic font-weight-light">Le  {{ comment.created_at|localizeddate('none', 'none', null, timezone, 'eeee d MMMM Y à HH:mm') }}</span>
+                        </p>
+                        {% if comment.status == 2 %}
+                            <a href="{{ path('article_signalComment',{id: comment.id}) }}"
+                               class="btn btn-success btn-signal col-md-2">Signaler</a>
+                        {% endif %}
+                    </div>
+                    {% if comment.status == 1 %}
+                        <p class="text-moderation">Ce commentaire a été soumis à la modération</p>
+                    {% else %}
+                        <p class="text-comment">{{ comment.content }}</p>
                     {% endif %}
                 </div>
-                {% if comment.status == 1 %}
-                    <p class="text-moderation">Ce commentaire a été soumis à la modération</p>
-                {% else %}
-                    <p class="text-comment">{{ comment.content }}</p>
-                {% endif %}
-            </div>
             {% endif %}
         {% endfor %}
 
@@ -26,6 +26,7 @@
         <hr>
         <p> Pas de Commentaires</p>
     {% endif %}
+
 {% endblock %}
 
      {% block javascripts %}

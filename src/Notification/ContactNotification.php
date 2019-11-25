@@ -23,9 +23,9 @@ class ContactNotification
     }
 
     public function notifyInscription(User $user){
-
-        $message = (new \Swift_Message('Bienvnue sur ChiefsFrance'))
-            ->setFrom('noreply@server.com')
+dump($user);
+        $message = (new \Swift_Message('Bienvenue sur ChiefsFrance'))
+            ->setFrom('noreply@remileger.eu')
             ->setTo($user->getEmail())
             ->setBody($this->renderer->render('emails/inscription.html.twig',[
                 'user' => $user

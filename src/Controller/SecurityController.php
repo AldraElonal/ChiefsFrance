@@ -34,19 +34,18 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($form->isValid());
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
             $factory = new Factory();
             $generator = $factory->getLowStrengthGenerator();
             $token = $generator->generateString(16);
             $user->setToken($token);
-            $user->setRoles("ROLE_UNREGISTERED");
-
-
-            $notification->notifyInscription($user);
+            $user->setRoles(["ROLE_UNREGISTERED"]);
             $manager->persist($user);
             $manager->flush();
+
+            $notification->notifyInscription($user);
+
             $this->addFlash('success', 'Veuillez vérifier vos emails pour confirmer votre inscription');
 //            return $this->redirectToRoute('security_login');
         }
@@ -63,11 +62,12 @@ class SecurityController extends AbstractController
      * @param string $token
      * @return \Symfony\Component\HttpFoundation\Response
      */
+
     public function confirmRegistration(ObjectManager $manager, UserRepository $repository, string $token)
     {
         $user = $repository->findOneBy(['token' => $token]);
         if ($user != null AND $user->getRoles() == ["ROLE_UNREGISTERED"]) {
-            $user->setRoles("ROLE_ADMIN");
+            $user->setRoles(["ROLE_USER"]);
             $user->setToken(null);
             // regénérer un token une fois la validation confirmée?
             $manager->flush();
@@ -189,26 +189,24 @@ class SecurityController extends AbstractController
 
 
             $formProfile->handleRequest($request);
-                if ($formProfile->isSubmitted() AND $formProfile->isValid()) {
-                    $manager->flush();
-                    $this->addFlash('success', 'Votre profil a bien été modifié');
-                }
+            if ($formProfile->isSubmitted() AND $formProfile->isValid()) {
+                $manager->flush();
+                $this->addFlash('success', 'Votre profil a bien été modifié');
+            }
 
 
             $formPassword->handleRequest($request);
-                if ($formPassword->isSubmitted() AND $formPassword->isValid()) {
-                    $hash = $encoder->encodePassword($emptyUser, $emptyUser->getPassword());
-                    $user->setPassword($hash);
-                    $manager->flush();
-                    $this->addFlash('success', 'Votre mot de passe a bien été modifié');
-                }
-
-                dump($this->getUser()->getUsername());
-if($username == $this->getUser()->getUsername()){
-    $editroles = true;
-}else{
-    $editroles = false;
-}
+            if ($formPassword->isSubmitted() AND $formPassword->isValid()) {
+                $hash = $encoder->encodePassword($emptyUser, $emptyUser->getPassword());
+                $user->setPassword($hash);
+                $manager->flush();
+                $this->addFlash('success', 'Votre mot de passe a bien été modifié');
+            }
+            if ($username == $this->getUser()->getUsername() OR $user->getRoles()==["ROLE_ADMIN"]) {
+                $editroles = false;
+            } else {
+                $editroles = true;
+            }
             return $this->render("security/editProfile.html.twig", [
                 "formProfile" => $formProfile->createView(),
                 "formPassword" => $formPassword->createView(),

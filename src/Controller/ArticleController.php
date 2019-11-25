@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Json;
-use Symfony\Component\Validator\Constraints\Timezone;
 
 class ArticleController extends AbstractController
 {
@@ -32,6 +31,7 @@ class ArticleController extends AbstractController
     private $userRepository;
 
     private $localTimeZone;
+
     /**
      * ArticleController constructor.
      * @param ArticleRepository $articleRepository
@@ -39,7 +39,7 @@ class ArticleController extends AbstractController
      */
     public function __construct(ArticleRepository $articleRepository, UserRepository $userRepository)
     {
-$this->localTimeZone = new \DateTimeZone("Europe/Paris");
+        $this->localTimeZone = new \DateTimeZone("Europe/Paris");
         $this->articleRepository = $articleRepository;
         $this->userRepository = $userRepository;
     }
@@ -52,15 +52,9 @@ $this->localTimeZone = new \DateTimeZone("Europe/Paris");
      */
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
-//        $articles =  $this->articleRepository->findAll();
         $articles = $paginator->paginate($this->articleRepository->findAllVisibleQuery(),
             $request->query->getInt('page', 1),
             4);
-
-//        foreach ($articles as $article) {
-//            $user = $this->userRepository->findOneBy(['id' => $article->getUserId()]);
-//            $article->setUserId($user);
-//        }
 
         return $this->render('Front/articles.html.twig', [
             'articles' => $articles,
@@ -109,7 +103,7 @@ $this->localTimeZone = new \DateTimeZone("Europe/Paris");
         //findArticleCommentAllowed($id);
         //findBy(["Article" => $id,'status' => ], ["created_at" => "DESC"]);
 
-        return $this->render('front/article.html.twig', [
+        return $this->render('Front/article.html.twig', [
             'article' => $article,
             'formComment' => $formComment->createView(),
             'comments' => $articleComments,
@@ -121,23 +115,28 @@ $this->localTimeZone = new \DateTimeZone("Europe/Paris");
      * @param int $id
      * @param CommentRepository $commentRepository
      * @param int $page
-     * @return JsonResponse
+     * //     * @return Json
      * @Route("/comments/{id}/{page}", name="article_comments")
      */
     public function articleComments(int $id, CommentRepository $commentRepository, int $page = 0)
     {
 
-        $nbComments = $commentRepository->count(["Article" => $id]);
-        if($nbComments < ($page) * 4){ // page trop élevée => on affiche la première page
+        $commentsQuery = $commentRepository->findArticleCommentAllowed($id);
+        $nbComments = count($commentsQuery);
+        if ($nbComments <= ($page) * 4) {
             $page = 0;
         }
-        $comments = $commentRepository->findBy(["Article" => $id]);
-        $commentsToDisplay = array_slice($comments,2*$page,4);
+        $commentsToDisplay = array_slice($commentsQuery, 4 * $page, 4);
+        $thereAreComments = $nbComments > 0;
+        $allowNext = $nbComments > 4*$page + 4;
+        $allowPrevious = $page != 0;
+//        return new JsonResponse($commentsToDisplay);
         $response = $this->render("Front/comments.html.twig", [
             "comments" => $commentsToDisplay,
-            'timezone' => $this->localTimeZone
+            'timezone' => $this->localTimeZone,
         ]);
-        return new JsonResponse($response->getContent());
+        $data = [$response->getContent(), $thereAreComments, $allowPrevious];
+        return new JsonResponse($data);
     }
 
 
@@ -152,13 +151,13 @@ $this->localTimeZone = new \DateTimeZone("Europe/Paris");
             $comment = $commentRepository->findOneBy(['id' => $id]);
             $comment->setStatus(1);
             $manager->flush();
-     return $this->json([
-         "message" => "commentaire signalé avec succès"
-            ],200);
+            return $this->json([
+                "message" => "commentaire signalé avec succès"
+            ], 200);
         } else {
             return $this->json([
                 "message" => 'Vous devez etre connecté pour signaler un commentaire'
-            ],403);
+            ], 403);
         }
 
 

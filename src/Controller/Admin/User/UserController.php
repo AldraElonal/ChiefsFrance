@@ -48,8 +48,6 @@ class UserController extends AbstractController
 
     public function editUser(int $id, ObjectManager $manager)
     {
-        var_dump($_POST["roles"]);
-        var_dump($_POST);
         $user = $this->repository->findOneBy(['id' => $id]);
 
         $user->setRoles($_POST['roles']);

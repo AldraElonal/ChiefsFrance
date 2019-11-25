@@ -1,3 +1,5 @@
+
+
 .table > tbody > tr > td {
     vertical-align: middle;
 }
@@ -33,7 +35,11 @@
 }
 
 
-/*.container{*/
+.container{
+    max-width: 97% !important;
+}
+
+/*.bodycontainer{*/
 
     /*max-width: none !important;*/
 /*}*/

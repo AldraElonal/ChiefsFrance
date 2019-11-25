@@ -11,6 +11,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
+    <div class="container bodycontainer mt-4">
     <nav class="navbar navbar-expand-lg navbar-dark bg-redchiefs">
         <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('img/logo.png') }}" height="64"/></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -70,6 +71,8 @@
     </div>
     {% endfor %}
         {% block body %}{% endblock %}
+
+    </div>
         {% block javascripts %}{% endblock %}
 
 

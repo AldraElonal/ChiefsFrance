@@ -28,6 +28,9 @@
                     <thead class="bg-redchiefs text-light">
                     <tr>
                         <th>
+                            role
+                        </th>
+                        <th>
                             utilisateur
                         </th>
                         <th>
@@ -41,7 +44,26 @@
                     {% for user in users %}
                         <tbody>
                         <tr>
-
+                            <td>
+                                {% if "ROLE_ADMIN" in user.roles %}
+                                    <i class="fas fa-crown"></i>
+                                {% endif %}
+                                {% if "ROLE_CONTRIBUTEUR" in user.roles %}
+                                    <i class="far fa-newspaper"></i>
+                                {% endif %}
+                                {% if "ROLE_MANAGER" in user.roles %}
+                                    <i class="fas fa-users"></i>
+                                {% endif %}
+                                {% if "ROLE_USER" in user.roles %}
+                                    <i class="fas fa-user-check"></i>
+                                {% endif %}
+                                {% if "ROLE_UNREGISTERED" in user.roles %}
+                                    <i class="fas fa-user-times"></i>
+                                {% endif %}
+                                {% if "ROLE_BANNED" in user.roles %}
+                                    <i class="fas fa-user-slash"></i>
+                                {% endif %}
+                            </td>
                             <td>
                                 {{ user.username }}
                             </td>
@@ -51,7 +73,11 @@
                             <td>
                                 <a href="{{ path('security_editmember',{username : user.username}) }}"
                                    class="btn btn-success">Editer le profil</a>
-                                <a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                                {#{{ if user.roles =/= desactivé }}#}
+                                {#<a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a> //descativation compter = role = ROLE_BANNED#}
+                                {#{{ else }}#}
+                                <a href="#" class="btn btn-success"><i class="fas fa-check"></i></i></a>
+                                {#//reactivation du compter = role = ROLE_USER#}
                             </td>
                         </tr>
                         </tbody>

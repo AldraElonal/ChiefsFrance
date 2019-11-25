@@ -22,7 +22,7 @@
                 </ul>
             </div>
             <div class="col-md-9 mt-4">
-                <h1> Liste des Articles</h1>
+                <h1> Liste des Articles gkfjgklsfjlfgkdskjjkj </h1>
 
                 <table class="table table-striped  text-center table-hover">
                     <thead class="bg-redchiefs text-light">
@@ -43,7 +43,7 @@
                         <tr>
 
                             <td>
-                                {{ article.title }}
+                                <a href="{{ path('article',{id: article.id}) }}" target="_blank">{{ article.title }}</a>
                             </td>
                             <td>
                                 {{ article.content|striptags|slice(0,100) }}

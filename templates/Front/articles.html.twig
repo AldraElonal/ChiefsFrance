@@ -18,7 +18,7 @@
                         </div>
                         {%  endif %}
                         <div class="col-md-8">
-                            {{ article.content|striptags|slice(0,100) }}...
+                              {{ article.content|html|replace({'&nbsp;':' '})|slice(0,100)|striptags }}...
                         </div>
                     </div>
 
