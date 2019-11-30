@@ -14,8 +14,6 @@ class ArcticleFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        // $product = new Product();
-        // $manager->persist($product);
         $userRepository = $manager->getRepository(User::class);
         $categoryRepository = $manager->getRepository(Category::class);
         $faker = Factory::create('fr_FR');
@@ -29,11 +27,8 @@ class ArcticleFixture extends Fixture
                 ->setCreatedAt(new \DateTime())
                 ->setCategoryId($categoryRepository->find(random_int(1,4)))
                 ->setUserId($userRepository->find(random_int(29,30)));
-
-
             $manager->persist($article);
         }
-
         $manager->flush();
     }
 }

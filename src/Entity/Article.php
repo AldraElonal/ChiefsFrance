@@ -52,12 +52,6 @@ class Article
      */
     private $imageName;
 
-
-//    /**
-//     * @ORM\Column(type="string", length=255, nullable=true)
-//     */
-//    private $url_picture;
-
     /**
      * @ORM\Column(type="boolean")
      */
@@ -193,7 +187,6 @@ class Article
             $this->comments[] = $comment;
             $comment->setArticle($this);
         }
-
         return $this;
     }
 
@@ -206,7 +199,6 @@ class Article
                 $comment->setArticle(null);
             }
         }
-
         return $this;
     }
 

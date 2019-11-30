@@ -7,15 +7,16 @@ use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class AdminArticleController extends AbstractController
 {
-
-
     /**
      * @var ArticleRepository
      */
@@ -37,24 +38,18 @@ class AdminArticleController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/admin/articles/editArticle/{id<\d+>?-1}", name="admin_editArticle" )
      */
-    public function editArticle(int $id, Request $request, ObjectManager $manager): Response
+    public function editArticle(int $id, Request $request, ObjectManager $manager, CacheManager $cacheManager, UploaderHelper $helper): Response
     {
-//dump($request);
         if ($id < 0) {
-//            edition d'un nouvel article
             $article = new Article();
             $form = $this->createForm(ArticleType::class, $article);
             $form->handleRequest($request);
-            dump($form->isSubmitted());
-            dump($form->isSubmitted() AND $form->isValid());
             if ($form->isSubmitted() AND $form->isValid()) {
                 $article->setCreatedAt(new \DateTime());
                 $article->setUserId($this->getUser());
-                dump($article);
                 $manager->persist($article);
                 $manager->flush();
                 $this->addFlash('success', 'Votre Article a été enregistré avec succès');
@@ -63,24 +58,22 @@ class AdminArticleController extends AbstractController
             return $this->render("Back/editArticle.html.twig", [
                 "form" => $form->createView()
             ]);
-
         } else {
             // edition d'un article existant
             $article = $this->articleRepository->findOneBy(['id' => $id]);
             $form = $this->createForm(ArticleType::class, $article);
             $form->handleRequest($request);
-            dump($form->isSubmitted());
-            dump($form->isSubmitted() AND $form->isValid());
             if ($form->isSubmitted() AND $form->isValid()) {
+                if ($article->getImageFile() instanceof UploadedFile) {
+                    $cacheManager->remove($helper->asset($article, 'imageFile'));
+                }
                 $manager->flush();
                 $this->addFlash('success', 'Votre Article a été modifié avec succès');
                 return $this->redirectToRoute('admin_articles');
             }
         }
-
         return $this->render("Back/editArticle.html.twig", [
             "form" => $form->createView()
         ]);
-
     }
 }

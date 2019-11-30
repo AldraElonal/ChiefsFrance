@@ -17,7 +17,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
 {
-
     /**
      * @Route("/inscription", name="security_registration")
      * @param Request $request
@@ -28,10 +27,8 @@ class SecurityController extends AbstractController
      */
     public function registration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, ContactNotification $notification)
     {
-
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $hash = $encoder->encodePassword($user, $user->getPassword());
@@ -43,13 +40,9 @@ class SecurityController extends AbstractController
             $user->setRoles(["ROLE_UNREGISTERED"]);
             $manager->persist($user);
             $manager->flush();
-
             $notification->notifyInscription($user);
-
             $this->addFlash('success', 'Veuillez vérifier vos emails pour confirmer votre inscription');
-//            return $this->redirectToRoute('security_login');
         }
-
         return $this->render('security/registration.html.twig', [
             'form' => $form->createView()
         ]);
@@ -62,14 +55,12 @@ class SecurityController extends AbstractController
      * @param string $token
      * @return \Symfony\Component\HttpFoundation\Response
      */
-
     public function confirmRegistration(ObjectManager $manager, UserRepository $repository, string $token)
     {
         $user = $repository->findOneBy(['token' => $token]);
         if ($user != null AND $user->getRoles() == ["ROLE_UNREGISTERED"]) {
             $user->setRoles(["ROLE_USER"]);
             $user->setToken(null);
-            // regénérer un token une fois la validation confirmée?
             $manager->flush();
             return $this->render('security/validation.html.twig', [
                 'user' => $user
@@ -88,15 +79,12 @@ class SecurityController extends AbstractController
      */
     public function forgotPassword(UserRepository $repository, ContactNotification $notification, ObjectManager $manager, Request $request): Response
     {
-
         $user = new User();
-
         $form = $this->createFormBuilder($user, [
             'validation_groups' => "newPassword"
         ])
             ->add('email')
             ->getForm();
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $repository->findOneBy(['email' => $user->getEmail()]);
@@ -115,7 +103,6 @@ class SecurityController extends AbstractController
         return $this->render('security/askNewPassword.html.twig', [
             'form' => $form->createView()
         ]);
-
     }
 
     /**
@@ -129,72 +116,54 @@ class SecurityController extends AbstractController
     {
         $user = $repository->findOneBy(['id' => $id]);
         if ($user->getToken() == $token) {
-//$user = new User();
-//get User and check token =/= null
-
             $form = $this->createFormBuilder($user, [
                 'validation_groups' => "newPassword"
             ])
                 ->add('password', PasswordType::class)
                 ->add('confirm_password', PasswordType::class)
                 ->getForm();
-
             $form->handleRequest($request);
             if ($form->isSubmitted() AND $form->isValid()) {
                 $hash = $encoder->encodePassword($user, $user->getPassword());
                 $user->setPassword($hash);
                 $user->setToken(null);
-//            regénérer un token une fois le mdp modifié?
                 $manager->flush();
                 $this->addFlash('success', 'Votre mot de passe a été modifié, vous pouvez à présent vous connecter.');
                 return $this->redirectToRoute('security_login');
-
-
             }
             return $this->render("security/setNewPassword.html.twig", [
                 "user" => $user,
                 'form' => $form->createView()
             ]);
-
         } else {
             return $this->redirectToRoute("home");
         }
     }
 
-
     /**
      * @Route("/membre/{username}", name="security_editmember")
-     *
      */
     public function editProfile(string $username, UserRepository $repository, ObjectManager $manager, Request $request, UserPasswordEncoderInterface $encoder)
     {
-
         $emptyUser = new User();
 
         if ($this->getUser()->getUsername() == $username OR in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
             $user = $repository->findOneBy(["username" => $username]);
-
             if ($user == null) {
                 return $this->redirectToRoute("home");
             }
-
             $formProfile = $this->createForm(RegistrationType::class, $user);
-
             $formPassword = $this->createFormBuilder($emptyUser, [
                 'validation_groups' => "newPassword"
             ])
                 ->add('password', PasswordType::class)
                 ->add('confirm_password', PasswordType::class)
                 ->getForm();
-
-
             $formProfile->handleRequest($request);
             if ($formProfile->isSubmitted() AND $formProfile->isValid()) {
                 $manager->flush();
                 $this->addFlash('success', 'Votre profil a bien été modifié');
             }
-
-
             $formPassword->handleRequest($request);
             if ($formPassword->isSubmitted() AND $formPassword->isValid()) {
                 $hash = $encoder->encodePassword($emptyUser, $emptyUser->getPassword());
@@ -202,7 +171,7 @@ class SecurityController extends AbstractController
                 $manager->flush();
                 $this->addFlash('success', 'Votre mot de passe a bien été modifié');
             }
-            if ($username == $this->getUser()->getUsername() OR $user->getRoles()==["ROLE_ADMIN"]) {
+            if ($username == $this->getUser()->getUsername() OR $user->getRoles() == ["ROLE_ADMIN"]) {
                 $editroles = false;
             } else {
                 $editroles = true;
@@ -213,12 +182,8 @@ class SecurityController extends AbstractController
                 "user" => $user,
                 "editroles" => $editroles
             ]);
-
         }
-
-
         return $this->redirectToRoute("home");
-
     }
 
     /**
@@ -227,9 +192,7 @@ class SecurityController extends AbstractController
      */
     public function login()
     {
-
         return $this->render('security/login.html.twig');
-
     }
 
     /**
@@ -244,16 +207,10 @@ class SecurityController extends AbstractController
      */
     public function checkValid()
     {
-
-        if ($this->getUser()->getRoles() == ["ROLE_UNREGISTERED"] OR !$this->getUser()->gettoken() == "" OR !$this->getUser()->gettoken() == null) {
-// utilisateur non enregistré ou token non nul
-
+        if ($this->getUser()->getRoles() == ["ROLE_UNREGISTERED"] OR $this->getUser()->getRoles() == ["ROLE_BANNED"] OR !$this->getUser()->gettoken() == "" OR !$this->getUser()->gettoken() == null) {
             return $this->redirectToRoute("security_logout");
         } else {
-
-
             return $this->redirectToRoute("home");
-
         }
     }
 }

@@ -17,7 +17,7 @@
                 {% else %}
                     <img class="float-md-right ml-4 mb-4" src="{{ asset('img/jagschiefs.jpg') }}">
                 {% endif %}
-                <p> {{ article.content|html }} {{ article.content|html }} {{ article.content|html }} {{ article.content|html }} {{ article.content|html }} {{ article.content|html }}</p>
+                <p> {{ article.content|html }}</p>
             </div>
         </div>
 
@@ -52,24 +52,21 @@
 {% block javascripts %}
     <script>
         let page = 0;
-        console.log(page);
         getComments(page);
         $('.next_comments').on('click', () => {
-            console.log(page);
             page = page + 1;
             getComments(page);
         });
+
+
         $('.previous_comments').on('click', () => {
-            console.log(page);
             page = page - 1;
             getComments(page);
         });
 
         function getComments(page) {
-            console.log(page);
             let urlTarget = '{{ (path('article_comments',{id: article.id,page: 12354})) }}';
             urlTarget = urlTarget.replace("12354", page);
-            console.log(urlTarget);
             $.ajax({
                 url: urlTarget,
                 type: "POST",
@@ -79,29 +76,21 @@
 
                     if (data[1] === true) {
                         $('.navigation_comments').show();
-                        console.log("variable 1 true");
                     } else {
                         $('.navigation_comments').hide();
-                        console.log("variable 1 false");
                     }
 
                     if (data[2] === true) {
                         $('.previous_comments').prop("disabled", false);
-                        console.log("variable 2 true");
                     } else {
                         $('.previous_comments').prop("disabled", true);
-                        console.log("variable 2 false");
                     }
 
                     if (data[3] === true) {
-                        console.log("variable 3 true");
                         $('.next_comments').prop("disabled", false);
                     } else {
-                        console.log("variable 3 false");
                         $('.next_comments').prop("disabled", true);
                     }
-                    console.log(data[4]);
-                    console.log(data[5]);
                 },
                 error: function () {
                     $('#ajax-results').html(/*erreur d'affichage des commentaires*/);

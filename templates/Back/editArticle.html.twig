@@ -2,22 +2,41 @@
 
 {% block body %}
 
-    <div class="container">
-        {{ form_start(form) }}
-        {{ form_row(form.title,{'label': 'Titre de votre Article'}) }}
-        {{ form_row(form.categoryId,{'label': 'Catégorie'}) }}
-        {{ form_row(form.content,{'label': 'Contenu'}) }}
-        {{ form_row(form.imageFile,{'label': 'Image d\'illustration'}) }}
-        {{ form_row(form.status,{'label': 'Visible'}) }}
-        <button type="submit" class="btn btn-success">Enregistrer</button>
-        {{ form_end(form) }}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="list-group mt-4">
+                <li class="list-group-item bg-redchiefs text-light font-weight-bold"><a
+                            href="{{ path('admin_index') }}" class="text-light">Menu d'Administration</a></li>
+                {% if is_granted('ROLE_CONTRIBUTEUR') %}
+                    <a href="{{ path('admin_articles') }}" class="list-group-item list-group-item-action">Edition des
+                        Articles</a>
+                    <a href="{{ path('admin_editArticle') }}" class="list-group-item list-group-item-action">Ajouter un
+                        Article</a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path("admin_user") }}" class="list-group-item list-group-item-action">Edition
+                        des utilisateurs</a>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-9 mt-4">
+            {{ form_start(form) }}
+            {{ form_row(form.title,{'label': 'Titre de votre Article'}) }}
+            {{ form_row(form.categoryId,{'label': 'Catégorie'}) }}
+            {{ form_row(form.content,{'label': 'Contenu'}) }}
+            {{ form_row(form.imageFile,{'label': 'Image d\'illustration'}) }}
+            {{ form_row(form.status,{'label': 'Visible'}) }}
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
     </div>
-
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     <script>
         $(document).ready(function () {
             bsCustomFileInput.init()
         })
     </script>
-{% endblock %}
+    {% endblock %}
 

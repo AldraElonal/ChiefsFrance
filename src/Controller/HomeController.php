@@ -12,7 +12,6 @@ use Twig\Environment;
 
 class HomeController extends AbstractController
 {
-
     /**
      * @var Environment
      */
@@ -24,7 +23,6 @@ class HomeController extends AbstractController
     }
 
     /**
-     *
      * @Route("/", name="home")
      * @return Response
      * @throws \Twig\Error\LoaderError
@@ -34,10 +32,8 @@ class HomeController extends AbstractController
     public function index(ArticleRepository $articleRepository, CategoryRepository $categoryRepository): Response
     {
         $categories = $categoryRepository->findAll();
-
         foreach ($categories as $category) {
             $articles[] = $articleRepository->findOneBy(['category' => $category], ['created_at' => "DESC"]);
-
         }
         $timezone =  new \DateTimeZone("Europe/Paris");
         return new Response($this->twig->render('Front/home.html.twig',[

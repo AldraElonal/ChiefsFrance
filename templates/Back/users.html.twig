@@ -2,90 +2,101 @@
 
 {% block body %}
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <ul class="list-group mt-4">
-                    <li class="list-group-item bg-redchiefs text-light  font-weight-bold">Menu d'Administration</li>
-                    {% if is_granted('ROLE_CONTRIBUTEUR') %}
-                        <a href="{{ path('admin_articles') }}" class="list-group-item list-group-item-action">Edition des Articles</a>
-                        <a href="{{ path('admin_editArticle') }}" class="list-group-item list-group-item-action">Ajouter un Article</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_MANAGER') %}
-                        <a href="#" class="list-group-item list-group-item-action">Edition du Roster</a>
-                        <a href="" class="list-group-item list-group-item-action">Edition des Starters</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path("admin_user") }}" class="list-group-item list-group-item-action">Edition
-                            des utilisateurs</a>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="col-md-9 mt-4">
-                <h1> Edition des utilisateurs</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="list-group mt-4">
+                <li class="list-group-item bg-redchiefs text-light  font-weight-bold"><a href="{{ path('admin_index') }}" class="text-light">Menu d'Administration</a></li>
+                {% if is_granted('ROLE_CONTRIBUTEUR') %}
+                    <a href="{{ path('admin_articles') }}" class="list-group-item list-group-item-action">Edition des Articles</a>
+                    <a href="{{ path('admin_editArticle') }}" class="list-group-item list-group-item-action">Ajouter un Article</a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path("admin_user") }}" class="list-group-item list-group-item-action">Edition
+                        des utilisateurs</a>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-9 mt-4">
+            <h1> Edition des utilisateurs</h1>
 
-                <table class="table table-striped  text-center table-hover">
-                    <thead class="bg-redchiefs text-light">
-                    <tr>
-                        <th>
-                            role
-                        </th>
-                        <th>
-                            utilisateur
-                        </th>
-                        <th>
-                            email
-                        </th>
-                        <th>
-                            Actions
-                        </th>
-                    </tr>
-                    </thead>
-                    {% for user in users %}
-                        <tbody>
-                        <tr>
-                            <td>
-                                {% if "ROLE_ADMIN" in user.roles %}
-                                    <i class="fas fa-crown"></i>
-                                {% endif %}
-                                {% if "ROLE_CONTRIBUTEUR" in user.roles %}
-                                    <i class="far fa-newspaper"></i>
-                                {% endif %}
-                                {% if "ROLE_MANAGER" in user.roles %}
-                                    <i class="fas fa-users"></i>
-                                {% endif %}
-                                {% if "ROLE_USER" in user.roles %}
-                                    <i class="fas fa-user-check"></i>
-                                {% endif %}
-                                {% if "ROLE_UNREGISTERED" in user.roles %}
-                                    <i class="fas fa-user-times"></i>
-                                {% endif %}
-                                {% if "ROLE_BANNED" in user.roles %}
-                                    <i class="fas fa-user-slash"></i>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{ user.username }}
-                            </td>
-                            <td>
-                                {{ user.email }}
-                            </td>
-                            <td>
-                                <a href="{{ path('security_editmember',{username : user.username}) }}"
-                                   class="btn btn-success">Editer le profil</a>
-                                {#{{ if user.roles =/= desactivé }}#}
-                                {#<a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a> //descativation compter = role = ROLE_BANNED#}
-                                {#{{ else }}#}
-                                <a href="#" class="btn btn-success"><i class="fas fa-check"></i></i></a>
-                                {#//reactivation du compter = role = ROLE_USER#}
-                            </td>
-                        </tr>
-                        </tbody>
-                    {% endfor %}
-                </table>
-            </div>
+            <table class="table table-striped  text-center table-hover">
+                <thead class="bg-redchiefs text-light">
+                <tr>
+                    <th>
+                        role
+                    </th>
+                    <th>
+                        utilisateur
+                    </th>
+                    <th>
+                        email
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                {% for user in users %}
+                <tbody>
+                <tr>
+                    <td>
+                        {% if "ROLE_ADMIN" in user.roles %}
+                            <i class="fas fa-crown" data-toggle="tooltip" data-placement="Left" title="Admin"></i>
+                        {% endif %}
+                        {% if "ROLE_CONTRIBUTEUR" in user.roles %}
+                            <i class="far fa-newspaper" data-toggle="tooltip" data-placement="Left" title="Contributeur"></i>
+                        {% endif %}
+                        {% if "ROLE_MANAGER" in user.roles %}
+                            <i class="fas fa-users" data-toggle="tooltip" data-placement="Left" title="Manager"></i>
+                        {% endif %}
+                        {% if "ROLE_USER" in user.roles %}
+                            <i class="fas fa-user-check" data-toggle="tooltip" data-placement="Left" title="Utilisateur"></i>
+                        {% endif %}
+                        {% if "ROLE_UNREGISTERED" in user.roles %}
+                            <i class="fas fa-user-times" data-toggle="tooltip" data-placement="Left" title="En attente de validation"></i>
+                        {% endif %}
+                        {% if "ROLE_BANNED" in user.roles %}
+                            <i class="fas fa-user-slash" data-toggle="tooltip" data-placement="Left" title="Banni"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ user.username }}
+                    </td>
+                    <td>
+                        {{ user.email }}
+                    </td>
+                    <td>
+                        <a href="{{ path('security_editmember',{username : user.username}) }}"
+                           class="btn btn-success">Editer le profil</a>
+                        {%  if user.username != app.user.username %}
+                            {% if user.roles != ["ROLE_BANNED"] %}
+                                <a href="{{ path('admin_banUser',{username: user.username}) }}"
+                                   class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                            {% else %}
+                                <a href="{{ path('admin_unbanUser',{username: user.username}) }}"
+                                   class="btn btn-success"><i class="fas fa-check"></i></a>
+                            {% endif %}
+                            {% else %}
+                                <button class="btn btn-secondary" disabled><i class="fas fa-trash-alt"></i></button>
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+                {% endfor %}
+            </table>
         </div>
     </div>
+</div>
 
 {% endblock %}
 
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+{% endblock %}

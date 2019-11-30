@@ -8,12 +8,9 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
 
 class UserController extends AbstractController
 {
-
-
     /**
      * @var UserRepository
      */
@@ -21,22 +18,19 @@ class UserController extends AbstractController
 
     public function __construct(UserRepository $repository)
     {
-
         $this->repository = $repository;
     }
 
     /**
-     *
      * @Route("/admin/user", name="admin_user")
      * @return Response
      */
     public function index(): Response
     {
-
         $users = $this->repository->findAll();
+        dump($this->getUser()->getRoles());
         return new Response($this->renderView('Back/users.html.twig', ['users' => $users]));
     }
-
 
     /**
      *
@@ -45,16 +39,46 @@ class UserController extends AbstractController
      * @param ObjectManager $manager
      * @return \Symfony\Component\HttpFoundation\Response
      */
-
     public function editUser(int $id, ObjectManager $manager)
     {
         $user = $this->repository->findOneBy(['id' => $id]);
-
         $user->setRoles($_POST['roles']);
         $manager->flush();
-
         return $this->redirectToRoute("admin_user");
+    }
 
+    /**
+     * @Route("/banUser/{username}", name="admin_banUser")
+     * @param string $username
+     * @param UserRepository $userRepository
+     * @param ObjectManager $manager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function banUser(string $username, UserRepository $userRepository, ObjectManager $manager)
+    {
+        if ($username != $this->getUser()->getUsername()) {
+            $user = $userRepository->findOneBy(['username' => $username]);
+            $user->setRoles(["ROLE_BANNED"]);
+            $manager->flush();
+        }
+        return $this->redirectToRoute("admin_user");
+    }
+
+    /**
+     * @Route("/unbanUser/{username}", name="admin_unbanUser")
+     * @param string $username
+     * @param UserRepository $userRepository
+     * @param ObjectManager $manager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function unbanUser(string $username, UserRepository $userRepository, ObjectManager $manager)
+    {
+        $user = $userRepository->findOneBy(['username' => $username]);
+        if ($user->getRoles() == ["ROLE_BANNED"]) {
+            $user->setRoles(["ROLE_USER"]);
+            $manager->flush();
+        }
+        return $this->redirectToRoute("admin_user");
     }
 }
 

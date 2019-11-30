@@ -39,7 +39,7 @@ class CommentRepository extends ServiceEntityRepository
             ->where('c.Article = :article_id')
             ->setParameter('article_id', $article)
             ->andWhere('c.status >= :status')
-            ->setParameter('status',2)
+            ->setParameter('status',1)
             ->orderBy('c.created_at','DESC')
             ->getQuery();
 

@@ -1,8 +1,12 @@
 {% block comments %}
     {% if comments|length > 0 %}
+        <div class="div alert-danger commentsAlert">
+            ERROR
+        </div>
         {% for comment in comments %}
             {% if comment.status > 0 %}
                 <hr>
+
                 <div class="comment">
                     <div class="row">
                         <p class="font-weight-bold col-md-8"> {{ comment.username }}: <br>
@@ -39,23 +43,29 @@
                  const content = $(this).parent().parent().children('p.text-comment');
                  const that = $(this);
                  $.ajax({
-
                      url: url,
                      type: "POST",
                      dataType: "json",
                      // async: true,
-                     success: function () {
+                     success: function (data) {
+                         $('.alert-danger').hide();
+                         console.log(data);
                          content.html("Ce commentaire a été soumis à modération");
                          content.css('font-style', 'italic');
                          that.css('display', 'none');
 
+                     },
+                     error: function (data) {
+                         console.log(data);
+                         console.log(data['responseJSON'][0]);
+                         $('.alert-danger').show();
+                         $('.alert-danger').html(data['responseJSON'][0]);
                      }
-
                  });
              }
 
              document.querySelectorAll('a.btn-signal').forEach(function (link) {
-                 link.addEventListener('click', signalComment);
+             link.addEventListener('click', signalComment);
              })
 
          </script>

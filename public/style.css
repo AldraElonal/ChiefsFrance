@@ -88,3 +88,10 @@
 .category{
     border-radius: 41% !important;
 }
+
+
+.commentsAlert{
+    display: none;
+    padding: 1rem;
+    font-weight: bold;
+}

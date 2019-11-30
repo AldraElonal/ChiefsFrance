@@ -15,16 +15,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Json;
 
 class ArticleController extends AbstractController
 {
-
-
     /**
      * @var ArticleRepository
      */
     private $articleRepository;
+
     /**
      * @var UserRepository
      */
@@ -55,7 +53,6 @@ class ArticleController extends AbstractController
         $articles = $paginator->paginate($this->articleRepository->findAllVisibleQuery(),
             $request->query->getInt('page', 1),
             4);
-
         return $this->render('Front/articles.html.twig', [
             'articles' => $articles,
             'timezone' => $this->localTimeZone
@@ -73,13 +70,11 @@ class ArticleController extends AbstractController
      */
     public function article(int $id, CommentRepository $commentRepository, ObjectManager $manager, Request $request): Response
     {
-
         $article = $this->articleRepository->findOneBy(['id' => $id]);
         $user = $this->userRepository->findOneBy(['id' => $article->getUserId()]);
         $article->setUserId($user);
         $comment = new Comment();
         $formComment = $this->createForm(CommentType::class, $comment);
-
         $formComment->handleRequest($request);
         if ($formComment->isSubmitted() AND $formComment->isValid()) {
             $comment->setUser($this->getUser());
@@ -92,21 +87,10 @@ class ArticleController extends AbstractController
             unset($comment);
             $comment = new Comment();
             $formComment = $this->createForm(CommentType::class, $comment);
-
         }
-
-        $articleComments = $commentRepository->findBy(["Article" => $id]);
-
-//        dump($article->getCreatedAt()->getTimezone());
-
-//        findBy(["Article" => $id,'status' => 2], ["created_at" => "DESC"]);
-        //findArticleCommentAllowed($id);
-        //findBy(["Article" => $id,'status' => ], ["created_at" => "DESC"]);
-
         return $this->render('Front/article.html.twig', [
             'article' => $article,
             'formComment' => $formComment->createView(),
-            'comments' => $articleComments,
             'timezone' => $this->localTimeZone
         ]);
     }
@@ -115,12 +99,11 @@ class ArticleController extends AbstractController
      * @param int $id
      * @param CommentRepository $commentRepository
      * @param int $page
-     * //     * @return Json
+     * @return JsonResponse
      * @Route("/comments/{id}/{page}", name="article_comments")
      */
     public function articleComments(int $id, CommentRepository $commentRepository, int $page = 0)
     {
-
         $commentsQuery = $commentRepository->findArticleCommentAllowed($id);
         $nbComments = count($commentsQuery);
         if ($nbComments <= ($page) * 4) {
@@ -128,25 +111,21 @@ class ArticleController extends AbstractController
         }
         $commentsToDisplay = array_slice($commentsQuery, 4 * $page, 4);
         $thereAreComments = $nbComments > 0;
-        $allowNext = $nbComments > 4*$page + 4;
+        $allowNext = $nbComments > 4 * $page + 4;
         $allowPrevious = $page != 0;
-//        return new JsonResponse($commentsToDisplay);
         $response = $this->render("Front/comments.html.twig", [
             "comments" => $commentsToDisplay,
             'timezone' => $this->localTimeZone,
         ]);
-        $data = [$response->getContent(), $thereAreComments, $allowPrevious];
+        $data = [$response->getContent(), $thereAreComments, $allowPrevious, $allowNext];
         return new JsonResponse($data);
     }
-
 
     /**
      * @Route("/signalComment/{id}", name="article_signalComment")
      */
-
     public function signalComment(int $id, CommentRepository $commentRepository, ObjectManager $manager)
     {
-
         if ($this->getUser() != null) {
             $comment = $commentRepository->findOneBy(['id' => $id]);
             $comment->setStatus(1);
@@ -155,11 +134,8 @@ class ArticleController extends AbstractController
                 "message" => "commentaire signalé avec succès"
             ], 200);
         } else {
-            return $this->json([
-                "message" => 'Vous devez etre connecté pour signaler un commentaire'
-            ], 403);
+            $data[] = 'ERREUR : Vous devez etre connecté pour signaler un commentaire';
+            return $this->json($data, 401);
         }
-
-
     }
 }

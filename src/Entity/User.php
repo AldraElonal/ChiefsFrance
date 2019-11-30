@@ -64,7 +64,7 @@ class User implements UserInterface
     private $token;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="user_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="user", orphanRemoval=true)
      */
     private $articles;
 
@@ -133,15 +133,6 @@ class User implements UserInterface
 
         return $this;
     }
-
-
-//    public function setRoles(string $roles): self
-//    {
-//        $this->roles = $roles;
-//
-//        return $this;
-//    }
-
 
     public function addRole(string $role): self
     {

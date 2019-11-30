@@ -10,35 +10,16 @@
                 <div class="row no-gutters">
 
                     <div>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras volutpat nibh tincidunt bibendum
-                        imperdiet. Cras non rhoncus arcu. Maecenas rutrum gravida nisl, placerat viverra neque suscipit
-                        vitae. Etiam augue orci, consequat tempor lacinia at, tincidunt eu libero. Donec dui velit,
-                        eleifend sit amet posuere sed, cursus eu lacus. Integer gravida convallis nisl, sed sollicitudin
-                        mi lobortis vel. Integer eu odio vel nunc venenatis scelerisque. Sed vel neque ligula. Praesent
-                        eu dolor non elit blandit aliquam et rutrum metus. Praesent eu erat dignissim tortor commodo
-                        auctor ac a nisl. Mauris aliquam libero diam, non convallis leo laoreet ut. Nam augue ex,
-                        commodo ac sagittis at, varius et tellus. Cras volutpat ex ac velit blandit finibus. Cras in
-                        imperdiet nibh, eu porta elit.
+                     <p>  Bienvenue sur le site ChiefsFrance, créé par un fan des Chiefs pour les fans des Chiefs francophones.
+                        A l'origine ce n'était qu'un simple compte twitter sans prétention ( <a href="https://twitter.com/chiefsfrance">@ChiefsFrance</a> ), puis avec le nombre d'abonnés l'idée de créer quelque chose de plus consistant commenca à germer, histoire de produire du contenu plus enrichi. Le compte twitter c'est en effet suffisant pour les lvetweets des matchs et de la draft, la publication des brèves mais plus compliqué de produire des analyses ou des bilans dignes vraiment d'intéret, sans compter le fait qu'elles seraient facilement oubliés.</p><br>
 
-                        Proin at sapien in risus molestie malesuada et et erat. Curabitur fringilla turpis id tellus
-                        cursus, maximus bibendum erat sodales. Sed sagittis dictum nisi, sit amet facilisis risus
-                        commodo ut. Aenean suscipit malesuada nisl suscipit imperdiet. Sed bibendum leo eget ipsum
-                        sollicitudin pulvinar. Suspendisse et nisi pretium, aliquam nisi vel, malesuada ipsum. Nam
-                        blandit justo sit amet velit condimentum, nec pellentesque diam eleifend. Nunc nec fringilla
-                        tellus. Morbi velit purus, tincidunt vel nisl eget, tincidunt viverra turpis. Nullam vehicula,
-                        elit eu fringilla imperdiet, dui risus hendrerit purus, eget condimentum metus est in felis.
-                        Etiam consectetur faucibus eros at eleifend. Suspendisse nec nisi eget erat vestibulum blandit.
-                        Duis vel justo posuere, tristique orci et, convallis sem. Sed non neque ex.
+                       <p> Du coup, profitant de ma formation chez OpenClassroom de Dévellopeur Web, j'ai commencé à travailler à la création de ce site en fin d'année 2019. La première version ne comportait qu'un modeste blog, avant que les autres fonctionalités viennent l'enrichir. Je vous souhaite donc une bonne visite et n'hésitez pas à me contacter si vous voulez participer à la vie de ce site, via la rédaction d'articles, la participation au podcast, ou si vous avez une nouvelle fonctionnalitée.</p>
 
-                        Vivamus lectus nisl, cursus eget ex eget, iaculis tempor turpis. Pellentesque non rhoncus nisl,
-                        at aliquet ipsum. Vivamus porta erat arcu, fermentum egestas turpis euismod at. Maecenas quis
-                        ligula eu elit pulvinar suscipit quis nec nisl. Etiam aliquet mattis purus eu euismod. Donec
-                        quam metus, dapibus lacinia diam eget, sodales suscipit neque. Quisque leo neque, dapibus ac
-                        purus a, consequat lacinia metus. Curabitur ut molestie arcu, a feugiat dolor. Fusce quam diam,
-                        sollicitudin in nunc sit amet, eleifend tempus massa. Donec vulputate maximus scelerisque. Nunc
-                        porta, libero vel luctus tristique, turpis enim commodo sem, hendrerit ultricies augue neque id
-                        ante. Etiam at nulla a justo malesuada feugiat. Duis dui sem, condimentum ac varius et, lobortis
-                        quis mi.
+                        <p>#ChiefsKingdom<br>
+                        Aldra Elonal,<br>
+                        Créateur de ChiefsFrance,<br>
+                            CM de @ChiefsFrance</p>
+
                     </div>
                 </div>
             </div>
@@ -57,11 +38,11 @@
                             <div class="col-md-4">
 
                                 <img src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article_thumb') }}"
-                                     height="170" width="250"/>
+                                     height="150" width="150"/>
                             </div>
                         {% endif %}
-                        <div class="col-md-8">
-                            {{ article.content|html|replace({'&nbsp;':' '})|slice(0,100)|striptags }}...
+                        <div class="col-md-8"><p>
+                            {{ article.content|html|slice(0,300)|raw}}...</p>
                         </div>
                     </div>
 
