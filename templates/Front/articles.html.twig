@@ -14,7 +14,7 @@
                         {%  if article.imagename %}
                         <div class="col-md-4">
 
-                            <img src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article_thumb') }}" height="170" width="250"/>
+                            <img src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article_thumb') }}" height="170" width="250" alt="{{ article.title }} thumbnail"/>
                         </div>
                         {%  endif %}
                         <div class="col-md-8">

@@ -28,7 +28,6 @@ class UserController extends AbstractController
     public function index(): Response
     {
         $users = $this->repository->findAll();
-        dump($this->getUser()->getRoles());
         return new Response($this->renderView('Back/users.html.twig', ['users' => $users]));
     }
 
@@ -56,7 +55,11 @@ class UserController extends AbstractController
      */
     public function banUser(string $username, UserRepository $userRepository, ObjectManager $manager)
     {
-        if ($username != $this->getUser()->getUsername()) {
+        if ($this->getUser()->getRoles() != ['ROLE_ADMIN']) {
+            $this->addFlash('warning', "Vous n'avez pas l'autorisation de réaliser cette action");
+            return $this->redirectToRoute("admin_index");
+        }
+        if ($username != $this->getUser()->getUsername() ) {
             $user = $userRepository->findOneBy(['username' => $username]);
             $user->setRoles(["ROLE_BANNED"]);
             $manager->flush();
@@ -73,11 +76,15 @@ class UserController extends AbstractController
      */
     public function unbanUser(string $username, UserRepository $userRepository, ObjectManager $manager)
     {
-        $user = $userRepository->findOneBy(['username' => $username]);
-        if ($user->getRoles() == ["ROLE_BANNED"]) {
-            $user->setRoles(["ROLE_USER"]);
-            $manager->flush();
+        if ($this->getUser()->getRoles() != ['ROLE_ADMIN']) {
+            $this->addFlash('warning', "Vous n'avez pas l'autorisation de réaliser cette action");
+            return $this->redirectToRoute("admin_index");
         }
+            $user = $userRepository->findOneBy(['username' => $username]);
+            if ($user->getRoles() == ["ROLE_BANNED"]) {
+                $user->setRoles(["ROLE_USER"]);
+                $manager->flush();
+            }
         return $this->redirectToRoute("admin_user");
     }
 }

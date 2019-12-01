@@ -13,14 +13,13 @@
                 </p>
                 {% if article.imagename %}
                     <img class="float-md-right ml-4 mb-4"
-                         src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article') }}">
+                         src="{{ vich_uploader_asset(article,'imageFile')|imagine_filter('article') }}" alt="{{ article.title}} illustration ">
                 {% else %}
                     <img class="float-md-right ml-4 mb-4" src="{{ asset('img/jagschiefs.jpg') }}">
                 {% endif %}
                 <p> {{ article.content|html }}</p>
             </div>
         </div>
-
 
         <div class="card mt-4 mb-4">
             <h2 class="card-header bg-yellowchiefs"> Commentaires</h2>
@@ -39,8 +38,17 @@
 
                     <div id="ajax-results">Pas de Commentaires</div>
                     <div class="navigation_comments">
-                        <p class="pagination_comments"><button class="page-link previous_comments">Précédent</button><button
-                                    class="page-link next_comments"> Suivant</button></p>
+                        <ul class="pagination pagination_comments">
+                            <li class="page-item previous_comments_item">
+                                <button class="page-link previous_comments">Précédent</button>
+                            </li>
+                            <li><span id="pagenum">Numero De page</span></li>
+                            <li class="page-item next_comments_item">
+                                <button
+                                        class="page-link next_comments"> Suivant
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 {% endblock %}
             </div>
@@ -58,7 +66,6 @@
             getComments(page);
         });
 
-
         $('.previous_comments').on('click', () => {
             page = page - 1;
             getComments(page);
@@ -73,7 +80,7 @@
                 dataType: "json",
                 success: function (data) {
                     $('#ajax-results').html(data[0]);
-
+                    $('#pagenum').html(page + 1);
                     if (data[1] === true) {
                         $('.navigation_comments').show();
                     } else {
@@ -82,18 +89,22 @@
 
                     if (data[2] === true) {
                         $('.previous_comments').prop("disabled", false);
+                        $('.previous_comments_item').removeClass("disabled");
                     } else {
                         $('.previous_comments').prop("disabled", true);
+                        $('.previous_comments_item').addClass("disabled");
                     }
 
                     if (data[3] === true) {
                         $('.next_comments').prop("disabled", false);
+                        $('.next_comments_item').removeClass("disabled");
                     } else {
                         $('.next_comments').prop("disabled", true);
+                        $('.next_comments_item').addClass("disabled");
                     }
                 },
                 error: function () {
-                    $('#ajax-results').html(/*erreur d'affichage des commentaires*/);
+                    $('#ajax-results').html("Erreur d'affichage des commentaires");
                 }
             });
         }

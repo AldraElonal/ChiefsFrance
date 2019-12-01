@@ -23,7 +23,6 @@ class ContactNotification
     }
 
     public function notifyInscription(User $user){
-dump($user);
         $message = (new \Swift_Message('Bienvenue sur ChiefsFrance'))
             ->setFrom('noreply@remileger.eu')
             ->setTo($user->getEmail())
@@ -32,20 +31,15 @@ dump($user);
             ]),'text/html');
 
         $this->mailer->send($message);
-
     }
 
-
     public function notifyLossPassword(User $user){
-
         $message = (new \Swift_Message('Mot de passe Perdu'))
             ->setFrom('noreply@server.com')
             ->setTo($user->getEmail())
             ->setBody($this->renderer->render('emails/forgotPassword.html.twig',[
                 'user' => $user
             ]),'text/html');
-
         $this->mailer->send($message);
-
     }
 }
